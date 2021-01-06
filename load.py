@@ -12,6 +12,8 @@ men_src = []
 col_num = 0
 src = 0
 
+sampel_num = 6
+
 
 def training_load(path_str):
     global x_size
@@ -24,7 +26,7 @@ def training_load(path_str):
         if os.path.isfile(path_str + '\\' + sub_dir):
             continue
         else:
-            print("loading " + sub_dir)
+            # print("loading " + sub_dir)
             load_file(path_str + '\\' + sub_dir)
     np.save("men_list", men_list)
     np.save("men_src", men_src)
@@ -40,7 +42,7 @@ def load_file(path_str):
     for filename in os.listdir(path_str):
         if os.path.isdir(path_str + '\\' + filename):
             continue
-        elif filename == "7.pgm":
+        elif filename == '%d' % sampel_num + ".pgm":
             break
         else:
             img = cv2.imread(path_str + '\\' + filename, cv2.IMREAD_GRAYSCALE)

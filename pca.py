@@ -4,7 +4,7 @@ import cv2
 
 x_size = load.x_size
 y_size = load.y_size
-retention = 0.91
+retention = 0.96
 
 Cov_mat = np.empty([1, 1])
 DR_mat = np.empty([1, 1])
@@ -26,8 +26,8 @@ def pca():
     global Com_mat
     Cov_mat = np.dot(load.sample_mat, load.sample_mat.T) / (load.col_num - 1)
     np.save("Cov_mat", Cov_mat)
-    print("Cov_mat: ", Cov_mat.shape)
-    print("Cov_mat over.\n")
+    # print("Cov_mat: ", Cov_mat.shape)
+    # print("Cov_mat over.\n")
 
     DR_Num, DR_mat = np.linalg.eig(Cov_mat)
 
@@ -39,33 +39,34 @@ def pca():
     # DR_Num = np.load("DR_Num.npy")
     # DR_mat = np.load("DR_mat.npy")
 
-    print("DR_Num: ", len(DR_Num))
-    print("DR_mat: ", np.shape(DR_mat))
-    print("DR done.\n")
+    # print("DR_Num: ", len(DR_Num))
+    # print("DR_mat: ", np.shape(DR_mat))
+    # print("DR done.\n")
 
     Sum = 0
     for i in range(0, len(DR_Num)):
-        Sum += DR_Num[i]
+        Sum += DR_Num[i] * DR_Num[i]
 
     cnt = 0
     for i in range(0, len(DR_Num)):
-        # if cnt / Sum >= retention:
-        if i >= 40:
+        if cnt / Sum >= retention:
+            # if i >= 40:
             break
         else:
             A = np.insert(A, i, values=DR_mat[:, i], axis=1)
-            cnt += DR_Num[i]
+            cnt += DR_Num[i] * DR_Num[i]
     A = A.T
     np.save("A", A)
-    print("A: ", np.shape(A))
-    print("A done.\n")
+    # print("A: ", np.shape(A))
+    # print("A done.\n")
 
     Com_mat = np.dot(A, load.sample_mat)
     np.save("Com_mat", Com_mat)
-    print("Com_mat: ", np.shape(Com_mat))
-    print("Com_mat done.\n")
+    # print("Com_mat: ", np.shape(Com_mat))
+    # print("Com_mat done.\n")
 
-    print("PCA done.\n")
+    # print("PCA done.\n")
+    return np.shape(A)[0]
 
 
 def detect(vec):
