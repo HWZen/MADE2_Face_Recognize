@@ -4,7 +4,7 @@ import pca
 import cv2
 import os
 
-path = "E:\\Github\\MADE2_Face_Recognize\\att_faces"
+path = "C:\\Users\\HWZ\\Github\\MADE2_Face_Recognize\\att_faces"
 
 x_size = load.x_size
 y_size = load.y_size
@@ -26,8 +26,10 @@ def test_all(path_str):
                 elif filename == str(load.sampel_num) + ".pgm":
                     cnt = True
                 elif cnt:
-                    src = cv2.imread(path_str + '\\' + sub_path + '\\' + filename, cv2.IMREAD_GRAYSCALE)
-                    src2 = cv2.resize(src, (int(x_size), int(y_size)), cv2.INTER_AREA)
+                    src = cv2.imread(path_str + '\\' + sub_path +
+                                     '\\' + filename, cv2.IMREAD_GRAYSCALE)
+                    src2 = cv2.resize(
+                        src, (int(x_size), int(y_size)), cv2.INTER_AREA)
                     src2 = load.Centralization(src2.ravel())
                     man, dis = pca.detect(src2)
                     if man == path_str + '\\' + sub_path:
@@ -57,6 +59,21 @@ def Full_test():
             temp2.append(pca.pca())
             temp2.append(test_all(path))
             print(i, ' ', j)
+            pca.A = np.empty([x_size * y_size, 0])
+            load.sample_mat = np.zeros([x_size * y_size, 0])
+            load.men_list = []
+            load.men_src = []
+            load.col_num = 0
+            load.src = 0
+
+            pca.Cov_mat = np.empty([1, 1])
+            pca.DR_mat = np.empty([1, 1])
+            pca.Tr_mat = np.empty([1, 1])
+            pca.DR_Num = np.empty([1, 1])
+            pca.A = np.empty([x_size * y_size, 0])
+            pca.Com_mat = np.empty([1, 1])
+            pca.men_src = 0
+
         temp1.append(temp2)
     result.append(temp1)
     np.save("full_test_result", np.array(result, dtype=object))
@@ -65,7 +82,7 @@ def Full_test():
 if __name__ == "__main__":
     parameter = input("select mode: T,A,F or R?\n")
     if parameter == 'T':
-        load.training_load("E:\\Github\\MADE2_Face_Recognize\\att_faces")
+        load.training_load(path)
         print("\nload over\n")
         pca.pca()
         print(load.col_num)
@@ -75,7 +92,7 @@ if __name__ == "__main__":
         print(man)
         print(dis)
     elif parameter == 'A':
-        print(test_all("E:\\Github\\MADE2_Face_Recognize\\att_faces"))
+        print(test_all(path))
     elif parameter == 'F':
         Full_test()
     else:
