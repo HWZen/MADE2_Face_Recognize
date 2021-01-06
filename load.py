@@ -37,18 +37,24 @@ def load_file(path_str):
     global col_num
     global men_list
     global men_src
+    cnt = 0
+    temp = np.zeros([x_size * y_size, ])
     for filename in os.listdir(path_str):
         if os.path.isdir(path_str + '\\' + filename):
             continue
-        elif filename == "7.pgm":
+        elif filename == "6.pgm":
             break
         else:
             img = cv2.imread(path_str + '\\' + filename, cv2.IMREAD_GRAYSCALE)
             img = cv2.resize(img, (int(x_size), int(y_size)), cv2.INTER_AREA)
-            sample_mat = np.insert(sample_mat, col_num, values=Centralization(img.ravel()), axis=1)
-            col_num += 1
-            men_list += [path_str]
             men_src.append(img)
+            img = img.ravel()
+            temp += img
+            cnt += 1
+    men_list += [path_str]
+    temp /= cnt
+    sample_mat = np.insert(sample_mat, col_num, values=Centralization(temp), axis=1)
+    col_num += 1
 
 
 def Centralization(Vector):
