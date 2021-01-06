@@ -123,3 +123,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea
+background
+*.npy
+att_faces
+temp*
