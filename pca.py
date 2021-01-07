@@ -15,7 +15,7 @@ Com_mat = np.empty([1, 1])
 men_src = 0
 
 
-def pca():
+def pca(use_cache=False):
     global x_size
     global y_size
     global retention
@@ -32,15 +32,16 @@ def pca():
     # print("Cov_mat over.\n")
 
     # 求协方差矩阵的特征值和特征向量
-    DR_Num, DR_mat = np.linalg.eig(Cov_mat)
+    if use_cache:
+        DR_Num = np.load("DR_Num.npy")
+        DR_mat = np.load("DR_mat.npy")
+    else:
+        DR_Num, DR_mat = np.linalg.eig(Cov_mat)
+        DR_Num = DR_Num.astype(Cov_mat.dtype)
+        DR_mat = DR_mat.astype(Cov_mat.dtype)
+        np.save("DR_Num", DR_Num)
+        np.save("DR_mat", DR_mat)
 
-    DR_Num = DR_Num.astype(Cov_mat.dtype)
-    DR_mat = DR_mat.astype(Cov_mat.dtype)
-    np.save("DR_Num", DR_Num)
-    np.save("DR_mat", DR_mat)
-
-    # DR_Num = np.load("DR_Num.npy")
-    # DR_mat = np.load("DR_mat.npy")
 
     # print("DR_Num: ", len(DR_Num))
     # print("DR_mat: ", np.shape(DR_mat))
@@ -49,7 +50,7 @@ def pca():
     # 归一，计算特征值总和
     Sum = 0
     for i in range(0, len(DR_Num)):
-        Sum += DR_Num[i] * DR_Num[i]
+        Sum += DR_Num[i]
 
     # 求选取的基向量的数量（根据设定的保留率），并生成降维换基矩阵，并保存。
     cnt = 0
@@ -59,7 +60,7 @@ def pca():
             break
         else:
             A = np.insert(A, i, values=DR_mat[:, i], axis=1)
-            cnt += DR_Num[i] * DR_Num[i]
+            cnt += DR_Num[i]
     A = A.T
     np.save("A", A)
     # print("A: ", np.shape(A))
