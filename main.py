@@ -48,18 +48,18 @@ def test_all(path_str):
 def Full_test():
     result = []
     temp1 = []
-    temp2 = []
     for i in range(2, 9):
-        temp1 = [i]
+        temp1 = []
         load.sampel_num = i
-        for j in range(91, 98):
-            temp2 = [j]
-            pca.retention = i / 100
+        for j in range(91, 99):
+            j /= 100
+            pca.retention = j
             load.training_load(path)
-            temp2.append(pca.pca())
-            temp2.append(test_all(path))
-            print(i, ' ', j)
-            pca.A = np.empty([x_size * y_size, 0])
+            dimension = pca.pca(use_cache=False if j == 0.91 else True)
+            rate = test_all(path)
+            temp1.append(test_all(path))
+            print(i, ' ', j, ' ', rate, ' ', dimension)
+
             load.sample_mat = np.zeros([x_size * y_size, 0])
             load.men_list = []
             load.men_src = []
@@ -73,10 +73,9 @@ def Full_test():
             pca.A = np.empty([x_size * y_size, 0])
             pca.Com_mat = np.empty([1, 1])
             pca.men_src = 0
-
-        temp1.append(temp2)
     result.append(temp1)
-    np.save("full_test_result", np.array(result, dtype=object))
+    np.savetxt("full_test_result.txt", result)
+    print(result)
 
 
 if __name__ == "__main__":
