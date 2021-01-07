@@ -24,11 +24,14 @@ def pca(use_cache=False):
     global DR_Num
     global A
     global Com_mat
+
+    # 求协方差矩阵，load.sample_mat是样本矩阵
     Cov_mat = np.dot(load.sample_mat, load.sample_mat.T) / (load.col_num - 1)
     np.save("Cov_mat", Cov_mat)
     # print("Cov_mat: ", Cov_mat.shape)
     # print("Cov_mat over.\n")
 
+    # 求协方差矩阵的特征值和特征向量
     if use_cache:
         DR_Num = np.load("DR_Num.npy")
         DR_mat = np.load("DR_mat.npy")
@@ -39,14 +42,17 @@ def pca(use_cache=False):
         np.save("DR_Num", DR_Num)
         np.save("DR_mat", DR_mat)
 
+
     # print("DR_Num: ", len(DR_Num))
     # print("DR_mat: ", np.shape(DR_mat))
     # print("DR done.\n")
 
+    # 归一，计算特征值总和
     Sum = 0
     for i in range(0, len(DR_Num)):
         Sum += DR_Num[i]
 
+    # 求选取的基向量的数量（根据设定的保留率），并生成降维换基矩阵，并保存。
     cnt = 0
     for i in range(0, len(DR_Num)):
         if cnt / Sum >= retention:
@@ -60,6 +66,7 @@ def pca(use_cache=False):
     # print("A: ", np.shape(A))
     # print("A done.\n")
 
+    # 将样本矩阵降维转基，得到对比矩阵，并保存。
     Com_mat = np.dot(A, load.sample_mat)
     np.save("Com_mat", Com_mat)
     # print("Com_mat: ", np.shape(Com_mat))

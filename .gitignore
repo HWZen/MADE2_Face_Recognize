@@ -128,3 +128,5 @@ background
 *.npy
 att_faces
 temp*
+faces
+*.zip
